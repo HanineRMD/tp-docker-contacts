@@ -25,7 +25,4 @@ docker run -d --name contacts-frontend-container --network contacts-network -p 3
 
 # 4. Accès à l'application
 http://localhost:3000 ```
-![Application de Gestion de Contacts](captures/1.jpg)
-
-![](captures/1.jpg)
-
+![Accueil](captures/1.jpg)
