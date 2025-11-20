@@ -1,0 +1,95 @@
+# =============================================
+# TP DOCKER - GESTION DE CONTACTS
+
+
+# === PARTIE 1 : PRÉPARATION DE L'APPLICATION ===
+
+# Création de la structure des dossiers
+mkdir -p tp-docker-contacts/frontend/public tp-docker-contacts/database
+cd tp-docker-contacts
+
+# === PARTIE 2 : CRÉATION DES DOCKERFILES ===
+
+# === PARTIE 3 : CONSTRUCTION DES IMAGES DOCKER ===
+
+# Construction de l'image de la base de données
+docker build -t contacts-db ./database
+
+# Construction de l'image du frontend
+docker build -t contacts-frontend ./frontend
+
+# Vérification des images créées
+docker images
+
+# === PARTIE 4 : CRÉATION DU RÉSEAU DOCKER ===
+
+# Création du réseau personnalisé
+docker network create contacts-network
+
+# Vérification du réseau
+docker network ls
+
+# === PARTIE 5 : LANCEMENT DES CONTENEURS ===
+
+# Démarrage du conteneur Base de données
+docker run -d --name contacts-db-container --network contacts-network -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=contacts_db contacts-db
+
+# Démarrage du conteneur Frontend
+docker run -d --name contacts-frontend-container --network contacts-network -p 3000:3000 -e DB_HOST=contacts-db-container -e DB_USER=root -e DB_PASSWORD=password -e DB_NAME=contacts_db contacts-frontend
+
+# Vérification des conteneurs en cours d'exécution
+docker ps
+
+# === PARTIE 6 : VÉRIFICATION ET TESTS ===
+
+# Vérification des logs de la base de données
+docker logs contacts-db-container
+
+# Vérification des logs du frontend
+docker logs contacts-frontend-container
+
+# Test de communication entre conteneurs
+docker exec -it contacts-frontend-container ping contacts-db-container
+
+# Test de la base de données
+docker exec -it contacts-db-container mysql -u root -ppassword contacts_db -e "SELECT * FROM contacts;"
+
+# L'application est accessible sur : http://localhost:3000
+
+# === PARTIE 7 : TESTS FONCTIONNELS ===
+
+# Test d'ajout de contacts via l'interface web
+# 1. Ouvrir http://localhost:3000
+
+# === PARTIE 8 : DOCKER COMPOSE  ===
+
+# Arrêt des conteneurs manuels
+docker stop contacts-frontend-container contacts-db-container
+docker rm contacts-frontend-container contacts-db-container
+
+# Démarrage avec Docker Compose
+docker-compose up -d
+
+# Vérification
+docker-compose ps
+
+# Arrêt de Docker Compose
+docker-compose down
+
+# === NETTOYAGE COMPLET ===
+
+# Arrêt et suppression des conteneurs
+docker stop contacts-frontend-container contacts-db-container
+docker rm contacts-frontend-container contacts-db-container
+
+# Suppression du réseau
+docker network rm contacts-network
+
+# Suppression des images
+docker rmi contacts-frontend contacts-db
+
+# Vérification du nettoyage
+docker ps -a
+docker images
+docker network ls
+
