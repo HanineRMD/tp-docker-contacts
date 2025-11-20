@@ -24,7 +24,8 @@ docker run -d --name contacts-db-container --network contacts-network -p 3306:33
 docker run -d --name contacts-frontend-container --network contacts-network -p 3000:3000 -e DB_HOST=contacts-db-container -e DB_USER=root -e DB_PASSWORD=password -e DB_NAME=contacts_db contacts-frontend
 
 # 4. Accès à l'application
-http://localhost:3000
-(captures/1.jpg)
+http://localhost:3000 ```
+![Application de Gestion de Contacts](captures/1.jpg)
 
-(captures/2.jpg)
+![](captures/1.jpg)
+
